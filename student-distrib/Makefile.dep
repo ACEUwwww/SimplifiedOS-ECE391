@@ -1,0 +1,26 @@
+boot.o: boot.S multiboot.h x86_desc.h types.h
+Keyboard_Interrupt_wrapper.o: Keyboard_Interrupt_wrapper.S \
+  Keyboard_Interrupt_wrapper.h
+syscall.o: syscall.S
+x86_desc.o: x86_desc.S x86_desc.h types.h
+cursor.o: cursor.c cursor.h types.h lib.h
+fileoptable.o: fileoptable.c fileoptable.h types.h filesystem.h \
+  terminal.h RTC.h
+filesystem.o: filesystem.c filesystem.h types.h lib.h scall.h x86_desc.h \
+  paging.h terminal.h fileoptable.h
+i8259.o: i8259.c i8259.h types.h lib.h
+idt.o: idt.c idt.h x86_desc.h types.h lib.h Keyboard_Interrupt_wrapper.h \
+  syscall.h scall.h filesystem.h paging.h terminal.h fileoptable.h
+kernel.o: kernel.c multiboot.h types.h x86_desc.h lib.h i8259.h debug.h \
+  tests.h idt.h paging.h keyboard.h RTC.h filesystem.h scall.h terminal.h \
+  fileoptable.h
+keyboard.o: keyboard.c i8259.h types.h lib.h keyboard.h terminal.h
+lib.o: lib.c lib.h types.h cursor.h
+paging.o: paging.c paging.h types.h x86_desc.h lib.h
+RTC.o: RTC.c i8259.h types.h lib.h RTC.h
+scall.o: scall.c lib.h types.h syscall.h scall.h x86_desc.h filesystem.h \
+  paging.h terminal.h fileoptable.h RTC.h keyboard.h i8259.h
+terminal.o: terminal.c terminal.h types.h keyboard.h i8259.h lib.h \
+  scall.h x86_desc.h filesystem.h paging.h fileoptable.h cursor.h
+tests.o: tests.c tests.h x86_desc.h types.h lib.h RTC.h paging.h \
+  filesystem.h scall.h terminal.h fileoptable.h

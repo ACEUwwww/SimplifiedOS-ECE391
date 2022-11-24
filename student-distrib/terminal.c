@@ -155,9 +155,13 @@ int32_t terminal_init(void)
     }
     current_terminal_id = 0;
     terminal_array[0].video_buffer_addr = VEDIO_BUFFER_1;
-    terminal_array[0].video_buffer_addr = VEDIO_BUFFER_2;
-    terminal_array[0].video_buffer_addr = VEDIO_BUFFER_3;
-    return execute((uint8_t*) "shell");
+    terminal_array[1].video_buffer_addr = VEDIO_BUFFER_2;
+    terminal_array[2].video_buffer_addr = VEDIO_BUFFER_3;
+    PT[(VEDIO_BUFFER_1>>12)] = PT[(VEDIO_BUFFER_1>>12)] | PTE_P;
+    PT[(VEDIO_BUFFER_2>>12)] = PT[(VEDIO_BUFFER_2>>12)] | PTE_P;
+    PT[(VEDIO_BUFFER_3>>12)] = PT[(VEDIO_BUFFER_3>>12)] | PTE_P;
+    tlb_flash();
+    return 0;
 }
 
 /* 
@@ -228,10 +232,4 @@ int32_t restore_terminal(int32_t tid)
     memcpy((uint8_t*) VIDEO_MEM, (uint8_t*)terminal_array[tid].video_buffer_addr, FOUR_KB);
 
     return 0;
-}
-
-// enable page at 0xB9000,0xBA000,0xBB000 of 4KB page
-void enable_video_buf_page(void)
-{
-    
 }

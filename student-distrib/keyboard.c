@@ -230,6 +230,7 @@ int handle_special_key(uint8_t scancode)
                     }
             }
             return 1;
+        /* Handle terminal switch case */
         case F1:
             if(Alt_pressed){
                 terminal_switch(0);
