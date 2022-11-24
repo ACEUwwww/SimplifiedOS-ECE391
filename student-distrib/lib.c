@@ -9,6 +9,8 @@
 #define NUM_ROWS    25
 #define ATTRIB      0x7
 
+static char* video_mem = (char *)VIDEO;
+
 void vertical_scrolling(void); /* declare a function */
 /* void clear(void);
  * Inputs: void

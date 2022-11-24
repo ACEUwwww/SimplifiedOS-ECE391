@@ -34,6 +34,9 @@
 
 #define BAKCSPACE 0x0E
 
+#define F1 0x3B
+#define F2 0x3C
+#define F3 0x3D
 
 /*Functions define*/
 void keyboard_init(void); 
@@ -42,7 +45,7 @@ void handle_keyboard_irq(void);
 int handle_special_key(uint8_t keypressed) ;
 void clean_buffer(void);
 int check_enter(void);
-int32_t get_buf_pos(void);
+int32_t save_buf_pos(void);
 void give_buf_pos(int32_t buf_pos);
 void clean_keyboard_buffer(void);
 

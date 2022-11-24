@@ -230,6 +230,21 @@ int handle_special_key(uint8_t scancode)
                     }
             }
             return 1;
+        case F1:
+            if(Alt_pressed){
+                terminal_switch(0);
+            }
+            return 1;
+        case F2:
+            if(Alt_pressed){
+                terminal_switch(1);
+            }
+            return 1;
+        case F3:
+            if(Alt_pressed){
+                terminal_switch(2);
+            }
+            return 1;
         /*return 0 if no special key is handled*/
         default:
             return 0;

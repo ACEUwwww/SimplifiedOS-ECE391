@@ -2,8 +2,6 @@
 #define TERMINAL_H
 
 #include "types.h"
-#include "scall.h"
-
 #define VEDIO_BUFFER_1 0xB9000
 #define VEDIO_BUFFER_2 0xBA000
 #define VEDIO_BUFFER_3 0xBB000
@@ -23,8 +21,8 @@ typedef struct terminal_t{
     /*To be added*/
 }terminal_t;
 
-extern terminal_t terminal_array[MAX_TERMINAL_SIZE];
-extern int32_t current_terminal_id;
+terminal_t terminal_array[MAX_TERMINAL_SIZE];
+int32_t current_terminal_id;
 
 int32_t terminal_open(const char* filename);
 int32_t terminal_close(const char* fname);
@@ -36,5 +34,5 @@ void clean_terminal_buffer();
 void read_to_cur_terminal_buffer(int32_t index,unsigned char input);
 int32_t restore_terminal(int32_t tid);
 int32_t save_terminal(int32_t tid);
-
+void enable_video_buf_page(void);
 #endif

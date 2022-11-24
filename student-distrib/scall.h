@@ -46,13 +46,6 @@ typedef struct PCB_t{
     // uint32_t mapped_video_addr;     
 } PCB_t;
 
-// global varible for use
-extern uint8_t pid_check[MAX_PROCESS_NUMBER]= {0,0,0,0,0,0};
-extern int32_t cur_pid = -1;
-extern int32_t new_pid = -1;
-extern PCB_t* cur_process_ptr = NULL;
-extern fdarray* filed_array = NULL ;
-
 
 
 int32_t execute(const uint8_t* command);
@@ -67,6 +60,9 @@ int8_t initialize_PCB(int8_t* arg_command);
 int32_t write(uint32_t offset, void* buf, int32_t n);
 int32_t read(uint32_t offset, void* buf, int32_t n);
 fdarray *getfdarray();
+void set_cur_pid(int32_t pid);
+int32_t get_cur_pid();
+void set_cur_process_ptr(PCB_t* process_ptr);
 /* Initialize fdarray*/
 void fdarray_init();
 

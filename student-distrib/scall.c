@@ -25,8 +25,13 @@
 
 #define SUCCESS 0
 #define FAIL -1
+// global varible for use
+uint8_t pid_check[MAX_PROCESS_NUMBER]= {0,0,0,0,0,0};
+int32_t cur_pid = -1;
+PCB_t* cur_process_ptr = NULL;
 
-
+fdarray* filed_array = NULL ;
+int32_t new_pid = -1;
 
 /*
  *  int32_t execute(const uint8_t* command)
@@ -551,3 +556,19 @@ fdarray *getfdarray()
 }
 
 
+int32_t get_cur_pid()
+{
+    return cur_pid;
+}
+
+void set_cur_pid(int32_t pid)
+{
+    cur_pid = pid;
+    return;
+}
+
+void set_cur_process_ptr(PCB_t* process_ptr)
+{
+    cur_process_ptr = process_ptr;
+    return;
+}

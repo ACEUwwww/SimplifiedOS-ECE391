@@ -99,8 +99,7 @@ void clean_terminal_buffer()
 {
     int i;
     /*Clean the keyboard buffer*/
-    for (i=0;i<MAX_TERMINAL_BUFFER_SIZE;i++)
-    {
+    for (i=0;i<MAX_TERMINAL_BUFFER_SIZE;i++){
         terminal_array[current_terminal_id].terminal_buffer[i] = '\0' ;
     }
     return ;
@@ -115,16 +114,19 @@ void clean_terminal_buffer()
  */
 int32_t terminal_switch(int32_t new_terminal_id)
 {
-    if (new_terminal_id = current_terminal_id)
+    if (new_terminal_id == current_terminal_id)
         return 0;
     if (terminal_array[new_terminal_id].current_process_id == -1){
         /*switch to this new terminal and open shell with process parent pid -1*/
         save_terminal(current_terminal_id);
         restore_terminal(new_terminal_id);
-
+        current_terminal_id = new_terminal_id;
+        execute((uint8_t*) "shell");
     }
     else{
-
+        save_terminal(current_terminal_id);
+        restore_terminal(new_terminal_id);
+        current_terminal_id = new_terminal_id;
     }
     return 0;
 }
@@ -155,9 +157,7 @@ int32_t terminal_init(void)
     terminal_array[0].video_buffer_addr = VEDIO_BUFFER_1;
     terminal_array[0].video_buffer_addr = VEDIO_BUFFER_2;
     terminal_array[0].video_buffer_addr = VEDIO_BUFFER_3;
-    restore_terminal(0);
     return execute((uint8_t*) "shell");
-    return -1;
 }
 
 /* 
@@ -193,13 +193,15 @@ int32_t save_terminal(int32_t tid)
     terminal_array[tid].buf_pos = save_buf_pos();
 
     // save the video memory
-    memcpy((uint8_t*)terminal_array[tid].video_buffer_addr, (uint8_t*) VIDEO_MEM, FOUR_KB);
+    memcpy((uint8_t*)terminal_array[tid].video_buffer_addr, (uint8_t*)VIDEO_MEM, FOUR_KB);
+
+    // save the current pid state
+    terminal_array[tid].current_process_id = get_cur_pid();
 
     // clean keyboard buffer without touching the terminal buffer
     clean_keyboard_buffer();
 
-
-
+    return 0;
 }
 
 
@@ -217,11 +219,19 @@ int32_t restore_terminal(int32_t tid)
     give_buf_pos(terminal_array[tid].buf_pos);
 
     // restore cuurent process id
-    cur_pid = terminal_array[tid].current_process_id;
-    cur_process_ptr = (PCB_t*)(END_OF_KERNEL - KERNEL_STACK_SIZE * (cur_pid + 1));
+    int32_t cur_pid = terminal_array[tid].current_process_id;
+    set_cur_pid(cur_pid);
+    PCB_t* cur_process_ptr = (PCB_t*)(END_OF_KERNEL - KERNEL_STACK_SIZE * (cur_pid + 1));
+    set_cur_process_ptr(cur_process_ptr);
 
     //restore the video memory
     memcpy((uint8_t*) VIDEO_MEM, (uint8_t*)terminal_array[tid].video_buffer_addr, FOUR_KB);
 
     return 0;
+}
+
+// enable page at 0xB9000,0xBA000,0xBB000 of 4KB page
+void enable_video_buf_page(void)
+{
+    
 }
