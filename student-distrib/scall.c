@@ -27,14 +27,6 @@
 #define FAIL -1
 
 
-// global varible for use
-uint8_t pid_check[MAX_PROCESS_NUMBER]= {0,0,0};
-int32_t cur_pid = -1;
-int32_t new_pid = -1;
-PCB_t* cur_process_ptr = NULL;
-fdarray* filed_array = NULL ;
-
-
 
 /*
  *  int32_t execute(const uint8_t* command)
@@ -207,7 +199,11 @@ int8_t initialize_PCB(int8_t* arg_command)
     /* allocate space in kernel space for the new process control block */
     PCB_t* cur_prc = (PCB_t*)(END_OF_KERNEL - KERNEL_STACK_SIZE * (new_pid + 1));
     cur_prc->pid = new_pid ;
-    cur_prc->parent_pid = cur_pid;
+    /* If this process is the first process of the terminal,*/
+    if (terminal_array[current_terminal_id].current_process_id == -1)
+        cur_prc->parent_pid = -1;
+    else
+        cur_prc->parent_pid = cur_pid;
 
     // init filed_array in PCB
     filed_array = cur_prc->fd_array ;
@@ -238,6 +234,8 @@ int8_t initialize_PCB(int8_t* arg_command)
     // update current pointer and pid in the global variable
     cur_process_ptr = cur_prc;
     cur_pid = cur_prc->pid ;
+    terminal_array[current_terminal_id].current_process_id = cur_pid;
+
 
     /* initialization for file descriptor array*/
     return SUCCESS;

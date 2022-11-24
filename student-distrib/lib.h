@@ -7,6 +7,12 @@
 
 #include "types.h"
 
+extern int screen_x;
+extern int screen_y;
+extern char* video_mem = (char *)VIDEO;
+
+
+
 int32_t printf(int8_t *format, ...);
 void putc(uint8_t c);
 int32_t puts(int8_t *s);

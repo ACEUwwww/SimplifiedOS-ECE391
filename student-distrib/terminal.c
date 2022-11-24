@@ -2,10 +2,11 @@
 #include "keyboard.h"
 #include "lib.h"
 #include "types.h"
+#include "scall.h"
+#include "paging.h"
+#include "cursor.h"
 
 
-static terminal_t terminal_array[MAX_TERMINAL_SIZE];
-static int32_t current_terminal_id;
 /* 
  * terminal_open
  *   DESCRIPTION: initializing the terminal for further use.
@@ -114,6 +115,17 @@ void clean_terminal_buffer()
  */
 int32_t terminal_switch(int32_t new_terminal_id)
 {
+    if (new_terminal_id = current_terminal_id)
+        return 0;
+    if (terminal_array[new_terminal_id].current_process_id == -1){
+        /*switch to this new terminal and open shell with process parent pid -1*/
+        save_terminal(current_terminal_id);
+        restore_terminal(new_terminal_id);
+
+    }
+    else{
+
+    }
     return 0;
 }
 
@@ -143,7 +155,9 @@ int32_t terminal_init(void)
     terminal_array[0].video_buffer_addr = VEDIO_BUFFER_1;
     terminal_array[0].video_buffer_addr = VEDIO_BUFFER_2;
     terminal_array[0].video_buffer_addr = VEDIO_BUFFER_3;
-    return execute((uint8_t*)"shell");    
+    restore_terminal(0);
+    return execute((uint8_t*) "shell");
+    return -1;
 }
 
 /* 
@@ -158,4 +172,56 @@ void read_to_cur_terminal_buffer(int32_t index,unsigned char input)
 {
     terminal_array[current_terminal_id].terminal_buffer[index] = input;
     return ;
+}
+
+
+/* 
+ *   save current terminal information into current terminal structure
+ *   DESCRIPTION: save current terminal information into current terminal structure
+ *   INPUTS: none
+ *   OUTPUTS: none
+ *   RETURN VALUE: void 
+ *   SIDE EFFECTS: none
+ */
+int32_t save_terminal(int32_t tid)
+{
+    // save cursor state
+    terminal_array[tid].screen_cursor_x = screen_x;
+    terminal_array[tid].screen_cursor_y = screen_y;
+
+    // save buffer position state 
+    terminal_array[tid].buf_pos = save_buf_pos();
+
+    // save the video memory
+    memcpy((uint8_t*)terminal_array[tid].video_buffer_addr, (uint8_t*) VIDEO_MEM, FOUR_KB);
+
+    // clean keyboard buffer without touching the terminal buffer
+    clean_keyboard_buffer();
+
+
+
+}
+
+
+int32_t restore_terminal(int32_t tid)
+{
+    // clean keyboard buffer without touching the terminal buffer
+    clean_keyboard_buffer();
+
+    // restore the cursor
+    screen_x = terminal_array[tid].screen_cursor_x;
+    screen_y = terminal_array[tid].screen_cursor_y;
+    update_cursor(screen_x,screen_y);
+
+    // restore buffer postion
+    give_buf_pos(terminal_array[tid].buf_pos);
+
+    // restore cuurent process id
+    cur_pid = terminal_array[tid].current_process_id;
+    cur_process_ptr = (PCB_t*)(END_OF_KERNEL - KERNEL_STACK_SIZE * (cur_pid + 1));
+
+    //restore the video memory
+    memcpy((uint8_t*) VIDEO_MEM, (uint8_t*)terminal_array[tid].video_buffer_addr, FOUR_KB);
+
+    return 0;
 }

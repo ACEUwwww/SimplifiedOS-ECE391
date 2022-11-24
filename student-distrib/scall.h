@@ -9,7 +9,7 @@
 #include "fileoptable.h"
 
 // variables we need
-#define MAX_PROCESS_NUMBER 3
+#define MAX_PROCESS_NUMBER 6
 #define USER_MEM 0x08000000
 #define USER_END 0x08400000
 #define USER_PADDR 0x08048000
@@ -45,6 +45,14 @@ typedef struct PCB_t{
     // uint32_t current_fd;            
     // uint32_t mapped_video_addr;     
 } PCB_t;
+
+// global varible for use
+extern uint8_t pid_check[MAX_PROCESS_NUMBER]= {0,0,0,0,0,0};
+extern int32_t cur_pid = -1;
+extern int32_t new_pid = -1;
+extern PCB_t* cur_process_ptr = NULL;
+extern fdarray* filed_array = NULL ;
+
 
 
 int32_t execute(const uint8_t* command);

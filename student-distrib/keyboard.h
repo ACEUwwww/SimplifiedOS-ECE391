@@ -44,5 +44,6 @@ void clean_buffer(void);
 int check_enter(void);
 int32_t get_buf_pos(void);
 void give_buf_pos(int32_t buf_pos);
+void clean_keyboard_buffer(void);
 
 #endif

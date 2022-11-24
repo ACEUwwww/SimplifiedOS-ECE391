@@ -295,5 +295,24 @@ int32_t save_buf_pos(void)
 void give_buf_pos(int32_t buf_pos)
 {
     buffer_position = buf_pos;
+    return;
 }
 
+
+/* 
+ *  only clean the keyboard buffer
+ *  DESCRIPTION: clean the keyboard buffer
+ *  INPUTS: none
+ *  OUTPUTS: none
+ *  RETURN VALUE: none
+ *  SIDE EFFECTS: none
+ */
+void clean_keyboard_buffer(void)
+{
+    int i;
+    for (i=0;i<128;i++){
+        keyboard_buffer[i] = '\0';
+    }
+    buffer_position = 0;
+    return;
+}

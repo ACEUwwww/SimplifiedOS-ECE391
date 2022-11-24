@@ -9,6 +9,7 @@
 #define VEDIO_BUFFER_3 0xBB000
 #define MAX_TERMINAL_SIZE 3
 #define MAX_TERMINAL_BUFFER_SIZE 128
+#define FOUR_KB 4096
 
 typedef struct terminal_t{
     int32_t screen_cursor_x;
@@ -22,6 +23,8 @@ typedef struct terminal_t{
     /*To be added*/
 }terminal_t;
 
+extern terminal_t terminal_array[MAX_TERMINAL_SIZE];
+extern int32_t current_terminal_id;
 
 int32_t terminal_open(const char* filename);
 int32_t terminal_close(const char* fname);
@@ -31,6 +34,7 @@ int32_t terminal_switch(int32_t new_terminal_id);
 int32_t terminal_init(void);
 void clean_terminal_buffer();
 void read_to_cur_terminal_buffer(int32_t index,unsigned char input);
-
+int32_t restore_terminal(int32_t tid);
+int32_t save_terminal(int32_t tid);
 
 #endif
