@@ -121,6 +121,7 @@ int32_t terminal_switch(int32_t new_terminal_id)
         save_terminal(current_terminal_id);
         restore_terminal(new_terminal_id);
         current_terminal_id = new_terminal_id;
+        printf("current terminal is terminal %d\n",current_terminal_id);
         execute((uint8_t*) "shell");
     }
     else{
@@ -161,6 +162,7 @@ int32_t terminal_init(void)
     PT[(VEDIO_BUFFER_2>>12)] = PT[(VEDIO_BUFFER_2>>12)] | PTE_P;
     PT[(VEDIO_BUFFER_3>>12)] = PT[(VEDIO_BUFFER_3>>12)] | PTE_P;
     tlb_flash();
+    printf("current terminal is terminal %d\n",current_terminal_id);
     return 0;
 }
 
